@@ -8,7 +8,7 @@
       <button @click="updateTime">Update Time</button>
       <p>Startup times:</p>
       <ul>
-        <li v-for="t in TimeCursor">
+        <li v-for="(t,k) in TimeCursor" :key="k">
           {{t.time}}  -  {{t._id}}
         </li>
       </ul>
@@ -17,6 +17,7 @@
         {{settings}}
       </code></pre>
     </div>
+    {{data}}
   </div>
 </template>
 
@@ -29,6 +30,7 @@ export default {
     return {
       hello: 'World',
       settings: Meteor.settings.public,   // not Meteor reactive
+      data:''
     }
   },
   // Vue Methods
@@ -58,6 +60,10 @@ export default {
         sort: {time: -1}
       })
     },
+  },
+  mounted(){
+      console.log(23)
+    //   this.data=this.TimeCursor
   }
 }
 </script>
