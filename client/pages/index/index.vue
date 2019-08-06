@@ -1,6 +1,9 @@
 <template>
     <div>
         <!-- {{ Meteor.userId() }} -->
+        <a class="waves-effect waves-light btn">button</a>
+<a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>button</a>
+<a class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>button</a>
         <ul>
             <li v-for="(item, k) in muser" :key="k">{{ item.username }}</li>
         </ul>

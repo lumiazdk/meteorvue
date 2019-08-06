@@ -2,7 +2,7 @@
   "name": "meteorvue",
   "private": true,
   "scripts": {
-    "start": "meteor run",
+    "start": "export MONGO_URL=mongodb://localhost:27017/meteor&&meteor",
     "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/runtime": "^7.3.4",
     "bcrypt": "^3.0.6",
+    "materialize-css": "^1.0.0-rc.2",
     "meteor-node-stubs": "^0.4.1",
     "vant": "^2.1.1",
     "vue": "^2.6.10",
