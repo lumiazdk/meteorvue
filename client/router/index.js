@@ -3,6 +3,7 @@ import Router from "vue-router";
 import login from "../pages/login.vue";
 
 
+
 Vue.use(Router);
 
 const router = new Router({
@@ -15,6 +16,7 @@ const router = new Router({
         requireAuth: false
       }
     },
+   
     
   ]
 });
