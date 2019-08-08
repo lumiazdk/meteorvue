@@ -1,12 +1,12 @@
 <template>
-    <div class="app">
-        <home v-show="active == 'home'"></home>
-        <my v-show="active == 'my'"></my>
-        <pictures v-show="active == 'pictures'"></pictures>
-        <friends v-show="active == 'friends'"></friends>
+	<div class="app">
+		<home v-if="active == 'home'"></home>
+		<my v-if="active == 'my'"></my>
+		<pictures v-if="active == 'pictures'"></pictures>
+		<friends v-if="active == 'friends'"></friends>
 
-        <!-- {{ Meteor.userId() }} -->
-        <!-- <a class="waves-effect waves-light btn" @click="add">add</a>
+		<!-- {{ Meteor.userId() }} -->
+		<!-- <a class="waves-effect waves-light btn" @click="add">add</a>
         <a class="waves-effect waves-light btn" @click="update"
             ><i class="material-icons left">cloud</i>update</a
         >
@@ -20,122 +20,142 @@
         
         <input type="file" @change="add" ref="file" />
         <div v-for="i in 100">阿方索的</div> -->
-        <van-tabbar v-model="active">
-            <van-tabbar-item name="home" icon="home-o">首页</van-tabbar-item>
-            <van-tabbar-item name="pictures" icon="search"
-                >晒图</van-tabbar-item
-            >
-            <van-tabbar-item name="friends" icon="friends-o"
-                >宠友</van-tabbar-item
-            >
-            <van-tabbar-item name="my" icon="setting-o">我的</van-tabbar-item>
-        </van-tabbar>
-    </div>
+		<van-tabbar v-model="active">
+			<van-tabbar-item
+				name="home"
+				icon="home-o"
+			>首页</van-tabbar-item>
+			<van-tabbar-item
+				name="pictures"
+				icon="search"
+			>晒图</van-tabbar-item>
+			<van-tabbar-item
+				name="friends"
+				icon="friends-o"
+			>宠友</van-tabbar-item>
+			<van-tabbar-item
+				name="my"
+				icon="setting-o"
+			>我的</van-tabbar-item>
+		</van-tabbar>
+	</div>
 </template>
 <script>
-import { Accounts } from "meteor/accounts-base";
-import "../../../lib/collections/Post";
-import home from "../home/home";
-import my from "../my/my";
-import pictures from "../pictures/pictures";
-import friends from "../friends/friends";
+	import { Accounts } from "meteor/accounts-base";
+	import "../../../lib/collections/Post";
+	import home from "../home/home";
+	import my from "../my/my";
+	import pictures from "../pictures/pictures";
+	import friends from "../friends/friends";
 
+	import axios from "axios";
 
-import axios from "axios";
+	export default {
+		components: {
+			home,
+			my,
+			pictures,
+			friends
+		},
+		data() {
+			return {
+				active: "home",
+				show: true
+			};
+		},
+		meteor: {
+			// Subscriptions - Errors not reported spelling and capitalization.
+			$subscribe: {
+				users: []
+			},
+			muser() {
+				// console.log(Meteor.users.find({}).fetch());
+				return Meteor.users.find({}).fetch();
+			}
+		},
+		computed: {
+			users() {
+				// console.log(Meteor.users.find({}).fetch())
+				// return Meteor.users.find({}).fetch();
+			}
+		},
+		methods: {
+			register() {
+				let registerData = {
+					username: "zdkk" + Math.random(),
+					email: "1126572821@qq.com" + Math.random(),
+					password: "123456",
+					profile: {
+						autograph: "haha",
+						photo: "http://phnlqajge.bkt.clouddn.com/timg.jpg"
+					}
+				};
 
-export default {
-    components: {
-        home,
-        my,
-        pictures,
-        friends
-    },
-    data() {
-        return {
-            active: "home",
-            show: true
-        };
-    },
-    meteor: {
-        // Subscriptions - Errors not reported spelling and capitalization.
-        $subscribe: {
-            users: []
-        },
-        muser() {
-            // console.log(Meteor.users.find({}).fetch());
-            return Meteor.users.find({}).fetch();
-        }
-    },
-    computed: {
-        users() {
-            // console.log(Meteor.users.find({}).fetch())
-            // return Meteor.users.find({}).fetch();
-        }
-    },
-    methods: {
-        register() {
-            let registerData = {
-                username: "zdkk" + Math.random(),
-                email: "1126572821@qq.com" + Math.random(),
-                password: "123456",
-                profile: {
-                    autograph: "haha",
-                    photo: "http://phnlqajge.bkt.clouddn.com/timg.jpg"
-                }
-            };
+				Accounts.createUser(registerData, res => {
+					if (res) {
+						console.log(res);
+						if (res.reason == "Email already exists.") {
+							console.log("账户已存在");
 
-            Accounts.createUser(registerData, res => {
-                if (res) {
-                    console.log(res);
-                    if (res.reason == "Email already exists.") {
-                        console.log("账户已存在");
-
-                        return;
-                    }
-                } else {
-                    console.log("创建成功");
-                }
-            });
-        },
-        add() {
-            console.log(this.$refs.file.files);
-            let that = this;
-            let formData = new FormData();
-            formData.append("files", this.$refs.file.files[0]);
-            axios({
-                method: "post",
-                url: "/upload",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                data: formData
-            }).then(res => {
-                console.log(res);
-                if (res.data.code == 0) {
-                    let data = res.data.data;
-                } else {
-                }
-            });
-            return;
-            console.log(33);
-            var insert = Post.insert({
-                name: "zdk",
-                content: "我的第一个post"
-            });
-            console.log(insert);
-        },
-        update() {
-            var update = Post.upsert(
-                { _id: "S5YDQWe5AomLddCJLWJ" },
-                { $set: { content: "Alice" } }
-            );
-            console.log(update);
-        }
-    }
-};
+							return;
+						}
+					} else {
+						console.log("创建成功");
+					}
+				});
+			},
+			add() {
+				console.log(this.$refs.file.files);
+				let that = this;
+				let formData = new FormData();
+				formData.append("files", this.$refs.file.files[0]);
+				axios({
+					method: "post",
+					url: "/upload",
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded"
+					},
+					data: formData
+				}).then(res => {
+					console.log(res);
+					if (res.data.code == 0) {
+						let data = res.data.data;
+					} else {
+					}
+				});
+				return;
+				console.log(33);
+				var insert = Post.insert({
+					name: "zdk",
+					content: "我的第一个post"
+				});
+				console.log(insert);
+			},
+			update() {
+				var update = Post.upsert(
+					{ _id: "S5YDQWe5AomLddCJLWJ" },
+					{ $set: { content: "Alice" } }
+				);
+				console.log(update);
+			}
+		},
+		created() {
+			if (localStorage.pname) {
+				this.active = localStorage.pname;
+			} else {
+				localStorage.pname = "home";
+				this.active = localStorage.pname;
+			}
+		},
+		watch: {
+			active() {
+				localStorage.pname = this.active;
+			}
+		}
+	};
 </script>
 <style>
-.app {
-    padding-bottom: 50px;
-}
+	.app {
+		padding-bottom: 50px;
+	}
 </style>
