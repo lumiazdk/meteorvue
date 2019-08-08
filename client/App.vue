@@ -1,29 +1,39 @@
 <template>
     <div>
         <index></index>
+        <van-popup
+            v-model="pageShow"
+            get-container="#app"
+            position="right"
+            style="width:100%;height:100%"
+            :overlay-style="overlay"
+        >
+           
+        </van-popup>
     </div>
 </template>
 
 <script>
-import "/imports/collections/Time";
+import "/lib/collections/Time";
 import index from "./pages/index/index";
+import {mapState} from 'vuex'
 export default {
     components: {
         index
     },
+    computed: {
+      ...mapState(['pageShow'])
+    },
     data() {
         return {
-          
+            show: false,
+            overlay: { background: "#FFE" }
         };
     },
     // Vue Methods
-    methods: {
-       
-    },
+    methods: {},
     // Meteor reactivity
-    meteor: {
-       
-    },
+    meteor: {},
     mounted() {
         console.log(23);
         //   this.data=this.TimeCursor
@@ -32,7 +42,5 @@ export default {
 </script>
 
 <style scoped>
-p {
-    font-size: 2em;
-}
+
 </style>

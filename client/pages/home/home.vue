@@ -1,146 +1,193 @@
 <template>
-	<div>
-		<div
-			id="mescroll"
-			class="mescroll"
-		>
-			<div>
-				<van-swipe
-					:loop="true"
-					:autoplay="3000"
-				>
-					<van-swipe-item
-						v-for="(image, index) in images"
-						:key="index"
-					>
-						<img
-							v-lazy="image"
-							style="height: 200px;width:100%"
-						/>
-					</van-swipe-item>
-				</van-swipe>
-				<swiper
-					:options="swiperOption"
-					ref="mySwiper"
-				>
-					<!-- slides -->
-					<swiper-slide>I'm Slide 1</swiper-slide>
-					<swiper-slide>I'm Slide 2</swiper-slide>
-					<swiper-slide>I'm Slide 3</swiper-slide>
-					<swiper-slide>I'm Slide 4</swiper-slide>
-					<swiper-slide>I'm Slide 5</swiper-slide>
-					<swiper-slide>I'm Slide 6</swiper-slide>
-					<swiper-slide>I'm Slide 7</swiper-slide>
-					<!-- Optional controls -->
-				</swiper>
-				<van-panel
-					title="标题"
-					desc="描述信息"
-					status="状态"
-				>
-					<div>内容</div>
-				</van-panel>
+    <div>
+        <div>
+            <van-swipe :loop="true" :autoplay="3000">
+                <van-swipe-item v-for="(image, index) in images" :key="index">
+                    <van-image style="height: 150px;width:100%" :src="image" />
+                </van-swipe-item>
+            </van-swipe>
+            <van-sticky>
+                <div style="padding:0 10px;background:white">
+                    <swiper
+                        :options="swiperOption"
+                        ref="mySwiper"
+                        style="margin-top:10px"
+                        fit="none"
+                    >
+                        <!-- slides -->
+                        <swiper-slide>
+                            <div
+                                class="animatebox"
+                                @click="changePage(true)"
+                                :style="{ background: `url(${'/img/t1.jpg'})` }"
+                            >
+                                <!-- <van-image
+                                    style="height: 100%;width:100%;border-radius: 8px;"
+                                    src="/img/t1.jpg"
+                                /> -->
+                            </div>
+                        </swiper-slide>
 
-			</div>
-		</div>
+                        <swiper-slide>
+                            <div
+                                class="animatebox"
+                                :style="{ background: `url(${'/img/t2.jpg'})` }"
+                            ></div>
+                        </swiper-slide>
+                        <swiper-slide>
+                            <div class="animatebox"></div>
+                        </swiper-slide>
+                        <swiper-slide>
+                            <div class="animatebox"></div>
+                        </swiper-slide>
+                        <!-- Optional controls -->
+                    </swiper>
+                </div>
+            </van-sticky>
 
-	</div>
+            <div class="line"></div>
+
+            <van-pull-refresh
+                v-model="isLoading"
+                @refresh="onRefresh"
+                style="min-height:300px"
+            >
+                <van-list
+                    v-model="loading"
+                    :finished="finished"
+                    finished-text="没有更多了"
+                    @load="onLoad"
+                >
+                    <van-panel
+                        desc="描述信息"
+                        v-for="(item,k) in getPost"
+                        :key="k"
+                        :title="item.name"
+                    >
+                        <van-grid :border="false" :column-num="3">
+                            <van-grid-item>
+                                <van-image
+                                    src="https://img.yzcdn.cn/vant/apple-1.jpg"
+                                />
+                            </van-grid-item>
+                            <van-grid-item>
+                                <van-image
+                                    src="https://img.yzcdn.cn/vant/apple-2.jpg"
+                                />
+                            </van-grid-item>
+                            <van-grid-item>
+                                <van-image
+                                    src="https://img.yzcdn.cn/vant/apple-3.jpg"
+                                />
+                            </van-grid-item>
+                            
+                        </van-grid>
+                    </van-panel>
+                    <div class="none" v-if="list.length == 0">
+                        <van-image
+                            src="/img/mescroll-empty.png"
+                            style="width:200px"
+                        />
+                    </div>
+                </van-list>
+            </van-pull-refresh>
+        </div>
+    </div>
 </template>
 <script>
-	import MeScroll from "mescroll.js";
-	import "mescroll.js/mescroll.min.css";
-	export default {
-		data() {
-			return {
-				mescroll: null, // mescroll实例对象
-				mescrollDown: {}, //下拉刷新的配置. (如果下拉刷新和上拉加载处理的逻辑是一样的,则mescrollDown可不用写了)
-				mescrollUp: {
-					// 上拉加载的配置.
-					callback: this.upCallback, // 上拉回调,此处简写; 相当于 callback: function(page, mescroll) { }
-					//以下是一些常用的配置,当然不写也可以的.
-					page: {
-						num: 0, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
-						size: 10 //每页数据条数,默认10
-					},
-					htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
-					noMoreSize: 5, //如果列表已无数据,可设置列表的总数量要大于5才显示无更多数据;
-					toTop: {
-						//回到顶部按钮
-						src: "./static/mescroll/mescroll-totop.png", //图片路径,默认null,支持网络图
-						offset: 1000 //列表滚动1000px才显示回到顶部按钮
-					},
-					empty: {
-						//列表第一页无任何数据时,显示的空提示布局; 需配置warpId才显示
-						warpId: "xxid", //父布局的id (1.3.5版本支持传入dom元素)
-						icon: "./static/mescroll/mescroll-empty.png", //图标,默认null,支持网络图
-						tip: "暂无相关数据~" //提示
-					}
-				},
-				dataList: [], // 列表数据
-				images: [
-					"https://img.yzcdn.cn/vant/apple-1.jpg",
-					"https://img.yzcdn.cn/vant/apple-2.jpg"
-				],
-				swiperOption: {
-					slidesPerView: 3,
-					spaceBetween: 30,
-					freeMode: true
-				}
-			};
-		},
-		computed: {
-			swiper() {
-				return this.$refs.mySwiper.swiper;
-			}
-		},
-		created: function() {
-			//创建MeScroll对象
-			if (this.mescroll) return;
-			console.log(22);
-			this.mescroll = new MeScroll(this.$refs.mescroll, {
-				//在mounted初始化mescroll,确保此处配置的ref有值
-				// down:{}, //下拉刷新的配置. (如果下拉刷新和上拉加载处理的逻辑是一样的,则down可不用写了)
-				up: {
-					callback: this.upCallback,
-					// 以下是一些常用的配置,当然不写也可以的.
-					page: {
-						num: 0, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
-						size: 10 //每页数据条数,默认10
-					},
-					htmlNodata: '<p class="upwarp-nodata">-- END --</p>',
-					noMoreSize: 5, //如果列表已无数据,可设置列表的总数量要大于5才显示无更多数据;
+import { mapMutations } from "vuex";
+// import "../../../lib/collections/Post";
 
-					toTop: {
-						//回到顶部按钮
-						src: "./static/mescroll/mescroll-totop.png", //图片路径,默认null,支持网络图
-						offset: 1000 //列表滚动1000px才显示回到顶部按钮
-					},
-					empty: {
-						//列表第一页无任何数据时,显示的空提示布局; 需配置warpId才显示
-						warpId: "mescroll", //父布局的id (1.3.5版本支持传入dom元素)
-						icon: "./static/mescroll/mescroll-empty.png", //图标,默认null,支持网络图
-						tip: "暂无相关数据~" //提示
-					}
-				}
-			});
-		},
-		methods: {
-			//上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
-			upCallback(page, mescroll) {
-				// 联网请求
-				let arr = [];
-				this.dataList = this.dataList.concat(arr);
-				// 数据渲染成功后,隐藏下拉刷新的状态
+export default {
+    data() {
+        return {
+            images: ["/img/b1.jpg", "/img/b2.jpg", "/img/b3.jpg"],
+            swiperOption: {
+                slidesPerView: 4,
+                // spaceBetween: 30,
+                freeMode: true
+            },
+            list: Post.find({}).fetch(),
+            loading: false,
+            finished: false,
+            count: 0,
+            isLoading: false,
+            page:1
+        };
+    },
+    computed: {
+        swiper() {
+            return this.$refs.mySwiper.swiper;
+        },
+        p(){
+            let a=this.page
+            console.log(23)
+            return Post.find({}).fetch()
+        }
+    },
+    meteor: {
+        // Subscriptions - Errors not reported spelling and capitalization.
+        $subscribe: {
+            Post: []
+        },
+       
+        getPost(){
+            console.log(Post.find({}).fetch())
+            return Post.find({}).fetch();
 
-				this.$nextTick(() => {
-					mescroll.endSuccess(arr.length);
-				});
-			}
-		},
-		destroyed() {
-			this.mescroll.destroy();
-		}
-	};
+        }
+    },
+    created: function() {
+        //创建MeScroll对象
+    },
+    methods: {
+        ...mapMutations(["changePage"]),
+        onLoad() {
+            // 异步更新数据
+            // setTimeout(() => {
+            //     for (let i = 0; i < 10; i++) {
+            //         this.list.push(this.list.length + 1);
+            //     }
+            //     // 加载状态结束
+            //     this.loading = false;
+
+            //     // 数据全部加载完成
+            //     if (this.list.length >= 40) {
+            //         this.finished = true;
+            //     }
+            // }, 500);
+            
+            console.log(Post.find({}).fetch())
+        },
+        onRefresh() {
+            console.log(Post.find({}).fetch())
+
+            setTimeout(() => {
+                this.$toast("刷新成功");
+                this.isLoading = false;
+            }, 500);
+        }
+    },
+    destroyed() {}
+};
 </script>
-<style>
+<style scope>
+.animatebox {
+    height: 70px;
+    width: 70px;
+    border-radius: 8px;
+    background: wheat;
+    background-size: cover !important;
+}
+.line {
+    height: 10px;
+    width: 100%;
+    background: #eeeeee;
+    margin-top: 10px;
+}
+.none {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 </style>
