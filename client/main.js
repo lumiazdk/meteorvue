@@ -11,6 +11,10 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 
 // require styles
 import 'swiper/dist/css/swiper.css'
+import './sourse/moment'
+moment.locale('zh-cn');
+Vue.prototype.$moment=moment
+
 // 注册组件
 Vue.use(VueAwesomeSwiper, /* { default global options } */)
 Vue.use(VueMeteorTracker);

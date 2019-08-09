@@ -46,6 +46,7 @@ export default {
 				return Meteor.users.findOne({_id:Meteor.userId()});
 			}
 		},
+		
 }
 </script>
 <style scoped>
