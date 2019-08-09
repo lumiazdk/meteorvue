@@ -13,9 +13,8 @@ import "/lib/methods/upload";
 import "./lronrouter";
 
 Meteor.startup(() => {
-  Router.configure({
-    noRoutesTemplate: "ReplacesSplashScreen"
-  });
+
+
   // Update the current time
   Meteor.call("UpdateTime");
   // Add a new doc on each start.

@@ -2,7 +2,7 @@
   "name": "meteorvue",
   "private": true,
   "scripts": {
-    "start": "export MONGO_URL=mongodb://49.234.10.232:886/meteor&&meteor",
+    "start": "export MONGO_URL=mongodb://49.234.10.232:886/meteor&&NO_HMR=1 meteor",
     "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"

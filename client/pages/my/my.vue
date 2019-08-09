@@ -2,7 +2,7 @@
 	<div>
 		<van-nav-bar>
 			<svg
-				class="icon"
+				class="icon camera"
 				aria-hidden="true"
 				slot="right"
 			>
@@ -14,7 +14,8 @@
 				round
 				width="10rem"
 				height="10rem"
-				src="https://img.yzcdn.cn/vant/cat.jpeg"
+				v-if="muser"
+				:src="muser.profile.photo"
 			/>
 		</div>
 		<van-cell is-link>
@@ -34,11 +35,28 @@
 		</van-cell>
 	</div>
 </template>
+<script>
+export default {
+	meteor: {
+			// Subscriptions - Errors not reported spelling and capitalization.
+			$subscribe: {
+				users: []
+			},
+			muser() {
+				return Meteor.users.findOne({_id:Meteor.userId()});
+			}
+		},
+}
+</script>
 <style scoped>
 	.banner {
 		height: 150px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+	.camera{
+		height: 15px;
+		width: 15px
 	}
 </style>

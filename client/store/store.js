@@ -4,7 +4,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     user: "zdk",
-    pageShow: true
+    pageShow: false
   },
   mutations: {
     changePage(state, p) {

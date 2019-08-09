@@ -11,7 +11,6 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 
 // require styles
 import 'swiper/dist/css/swiper.css'
-
 // 注册组件
 Vue.use(VueAwesomeSwiper, /* { default global options } */)
 Vue.use(VueMeteorTracker);
