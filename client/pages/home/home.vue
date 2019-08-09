@@ -41,8 +41,8 @@
                 <div class="line"></div>
             </van-sticky>
 
-            <div ref="mescroll" class="mescroll" id="mescroll">
-                <div>
+            <div id="mescroll" class="mescroll">
+                <div id="animallist">
                     <div
                         class="aui-card-list"
                         v-for="(item, k) in list"
@@ -122,6 +122,7 @@ export default {
             if (this.pages == this.page) {
                 this.mescroll.showNoMore();
             }
+            return this.pages && this.page;
         }
     },
     meteor: {
@@ -158,18 +159,18 @@ export default {
                 //可配置每页8条数据,默认10
                 toTop: {
                     //配置回到顶部按钮
-                    src: "./img/mescroll-totop.png",
+                    src: "/img/mescroll-totop.png",
                     //默认滚动到1000px显示,可配置offset修改
                     //html: null, //html标签内容,默认null; 如果同时设置了src,则优先取src
                     offset: 500
                 },
                 htmlNodata:
-                    '<p class=" foot"> 免责说明：以上产品均由第三方提供,有关责任由相应平台承担</p>',
+                    '<p class=" foot"> end</p>',
                 htmlLoading:
                     '<p class="upwarp-progress mescroll-rotate"></p><p class="upwarp-tip">努力加载中..</p>',
                 empty: {
                     //配置列表无任何数据的提示
-                    warpId: "mescroll",
+                    warpId: "animallist",
                     icon: "./img/mescroll-empty.png",
                     tip: "亲,暂无相关数据哦~" // btntext : "去逛逛 >" ,
                     // btnClick : function() {
@@ -203,9 +204,11 @@ export default {
                 { sort: { createdAt: -1 }, limit: this.limit * page.num }
             ).fetch();
             this.list = list;
-            console.log(list.length)
-                            this.mescroll.endByPage(list.length, 3);
-
+            console.log(list.length);
+            this.mescroll.endByPage(list.length, this.pages);
+            // if ((this.page = this.pages)) {
+            //     this.mescroll.showNoMore();
+            // }
         }
     },
     destroyed() {},
@@ -237,5 +240,11 @@ export default {
 .cardicon {
     height: 15px;
     width: 15px;
+}
+.mescroll-empty{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center
 }
 </style>
