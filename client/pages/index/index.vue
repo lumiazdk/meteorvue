@@ -1,26 +1,25 @@
 <template>
 	<div class="app">
-		<home v-if="active == 'home'"></home>
-		<my v-if="active == 'my'"></my>
-		<pictures v-if="active == 'pictures'"></pictures>
-		<friends v-if="active == 'friends'"></friends>
-
-		<!-- {{ Meteor.userId() }} -->
-		<!-- <a class="waves-effect waves-light btn" @click="add">add</a>
-        <a class="waves-effect waves-light btn" @click="update"
-            ><i class="material-icons left">cloud</i>update</a
-        >
-        <a class="waves-effect waves-light btn"
-            ><i class="material-icons right">cloud</i>button</a
-        >
-        <ul>
-            <li v-for="(item, k) in muser" :key="k">{{ item.username }}</li>
-        </ul>
-        <button @click="register">click</button>
-        
-        <input type="file" @change="add" ref="file" />
-        <div v-for="i in 100">阿方索的</div> -->
-		<van-tabbar v-model="active">
+		<div v-if="$route.path=='/'">
+			<home v-if="active == 'home'"></home>
+			<my v-if="active == 'my'"></my>
+			<pictures v-if="active == 'pictures'"></pictures>
+			<friends v-if="active == 'friends'"></friends>
+		</div>
+		<transition
+			:name="transitionName"
+			v-if="$route.path!='/'"
+		>
+			<keep-alive>
+				<router-view class="
+			Router">
+				</router-view>
+			</keep-alive>
+		</transition>
+		<van-tabbar
+			v-model="active"
+			v-if="$route.path=='/'"
+		>
 			<van-tabbar-item
 				name="home"
 				icon="home-o"
@@ -60,7 +59,8 @@
 		data() {
 			return {
 				active: "home",
-				show: true
+				show: true,
+				transitionName: "slide-right"
 			};
 		},
 		meteor: {
@@ -140,6 +140,11 @@
 			}
 		},
 		created() {
+			// console.log(2341234);
+			// this.$router.push({
+			// 	path: "/login"
+			// });
+
 			if (localStorage.pname) {
 				this.active = localStorage.pname;
 			} else {
@@ -150,6 +155,16 @@
 		watch: {
 			active() {
 				localStorage.pname = this.active;
+			},
+			$route(to, from) {
+				// 切换动画
+				let isBack = this.$router.isBack; // 监听路由变化时的状态为前进还是后退
+				if (isBack) {
+					this.transitionName = "slide-left";
+				} else {
+					this.transitionName = "slide-right";
+				}
+				this.$router.isBack = false;
 			}
 		}
 	};
@@ -157,5 +172,27 @@
 <style>
 	.app {
 		padding-bottom: 50px;
+	}
+	.Router {
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		transition: all 0.377s ease;
+		will-change: transform;
+		top: 0;
+		bottom: 0;
+		backface-visibility: hidden;
+		perspective: 1000;
+	}
+	.slide-left-enter,
+	.slide-right-leave-active {
+		opacity: 0;
+		transform: translate3d(-100%, 0, 0);
+	}
+
+	.slide-left-leave-active,
+	.slide-right-enter {
+		opacity: 0;
+		transform: translate3d(100%, 0, 0);
 	}
 </style>

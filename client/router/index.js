@@ -1,27 +1,23 @@
 import Vue from "vue";
 import Router from "vue-router";
 import login from "../pages/login.vue";
-
-
+import p from "../pages/pictures/pictures";
 
 Vue.use(Router);
 
 const router = new Router({
   routes: [
     {
-      path: "/",
+      path: "/login",
       name: "login",
-      component: login,
-      mata: {
-        requireAuth: false
-      }
+      component: login
     },
-   
-    
+    {
+      path: "/p",
+      name: "p",
+      component: p
+    }
   ]
 });
 
-router.beforeEach((to, from, next) => {
- 
-});
 export default router;

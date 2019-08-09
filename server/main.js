@@ -10,11 +10,11 @@ import "/lib/publications/User";
 
 import "/lib/methods/UpdateTime";
 import "/lib/methods/upload";
+import "/lib/methods/post";
+
 import "./lronrouter";
 
 Meteor.startup(() => {
-
-
   // Update the current time
   Meteor.call("UpdateTime");
   // Add a new doc on each start.

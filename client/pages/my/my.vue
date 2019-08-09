@@ -33,21 +33,36 @@
 				<span class="custom-title">我的消息</span>
 			</template>
 		</van-cell>
+		<div class="login">
+			<van-button
+				type="primary"
+				style="width:200px"
+				@click="tologin"
+			>登录</van-button>
+
+		</div>
 	</div>
 </template>
 <script>
-export default {
-	meteor: {
+	import { mapMutations } from "vuex";
+	export default {
+		meteor: {
 			// Subscriptions - Errors not reported spelling and capitalization.
 			$subscribe: {
 				users: []
 			},
 			muser() {
-				return Meteor.users.findOne({_id:Meteor.userId()});
+				return Meteor.users.findOne({ _id: Meteor.userId() });
 			}
 		},
-		
-}
+		methods: {
+			tologin() {
+				this.$router.push({
+					path: "/login"
+				});
+			}
+		}
+	};
 </script>
 <style scoped>
 	.banner {
@@ -56,8 +71,12 @@ export default {
 		justify-content: center;
 		align-items: center;
 	}
-	.camera{
+	.camera {
 		height: 15px;
-		width: 15px
+		width: 15px;
+	}
+	.login {
+		display: flex;
+		justify-content: center;
 	}
 </style>

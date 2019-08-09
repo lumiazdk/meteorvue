@@ -3,14 +3,9 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
-    user: "zdk",
-    pageShow: false
+    user: "zdk"
   },
-  mutations: {
-    changePage(state, p) {
-      state.pageShow = p;
-    }
-  },
+  mutations: {},
   actions: {}
 });
 export default store;
