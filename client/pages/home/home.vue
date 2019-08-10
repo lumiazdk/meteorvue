@@ -33,7 +33,6 @@
 							<swiper-slide>
 								<div
 									class="animatebox"
-									@click="changePage(true)"
 									:style="{ background: `url(${'/img/t1.jpg'})` }"
 								></div>
 							</swiper-slide>
@@ -65,7 +64,7 @@
 						<div class="aui-card-list-header aui-card-list-user aui-border-b">
 							<div class="aui-card-list-user-avatar">
 								<img
-									src="/aui/image/demo4.png"
+									:src="item.userId | photo"
 									class="aui-img-round"
 								/>
 							</div>
@@ -140,7 +139,8 @@
 		meteor: {
 			// Subscriptions - Errors not reported spelling and capitalization.
 			$subscribe: {
-				Post: []
+				Post: [],
+				users: []
 			},
 			getPost() {
 				Meteor.call(
@@ -208,7 +208,6 @@
 			});
 		},
 		methods: {
-			...mapMutations(["changePage"]),
 			onLoad(page) {
 				this.page = page.num;
 
@@ -233,6 +232,19 @@
 						}
 					}
 				);
+			}
+		},
+		filters: {
+			photo: function(value) {
+				if (!value) return "";
+				let photo = Meteor.users.findOne({
+					_id: value
+				})
+					? Meteor.users.findOne({
+							_id: value
+					  }).profile.photo
+					: "";
+				return photo;
 			}
 		},
 		destroyed() {

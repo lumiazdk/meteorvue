@@ -51,10 +51,8 @@
 			...mapState(["user"])
 		},
 		methods: {
-			...mapMutations(["changePage"]),
 			back() {
 				console.log(23);
-				this.changePage(false);
 				this.$router.push({
 					path: "/"
 				});

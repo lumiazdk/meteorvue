@@ -19,7 +19,11 @@ Meteor.startup(() => {
   Meteor.call("UpdateTime");
   // Add a new doc on each start.
   Time.insert({ time: new Date() });
-
+  Post.insert({
+    name: "zdkkk",
+    userId: "gZxBSF784aBhS9jeX",
+    content: "asdfasdgf"
+  });
   // Print the current time from the database
   console.log(`The time is now ${Time.findOne().time}`);
 });
